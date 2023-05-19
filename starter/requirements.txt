@@ -1,0 +1,6 @@
+confluent-kafka
+pandas
+requests
+confluent-kafka
+faust
+tornado
