@@ -4,3 +4,4 @@ requests
 confluent-kafka
 faust
 tornado
+urllib3
