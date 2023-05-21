@@ -26,9 +26,6 @@ def configure_connector():
     # Make sure to think about what an appropriate topic prefix would be, and how frequently Kafka
     # Connect should run this connector (hint: not very often!)
 
-    # load the configs from vs settings
-    config_settings = json.loads(open('../../.vscode/settings.json').read())["sqltools.connections"][0]
-    
     resp = requests.post(
        KAFKA_CONNECT_URL,
        headers={"Content-Type": "application/json"},
@@ -36,19 +33,19 @@ def configure_connector():
            "name": CONNECTOR_NAME,
            "config": {
                "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
-               "key.converter": "org.apache.kafka.connect.json.JsonConverter",
-               "key.converter.schemas.enable": "false",
-               "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-               "value.converter.schemas.enable": "false",
-               "batch.max.rows": "500",
-               "connection.url": "jdbc:postgresql://" + config_settings["server"] + ":" + str(config_settings["port"]) + "/stations",
-               "connection.user": config_settings["username"],
-               "connection.password": config_settings["password"],
-               "table.whitelist": "stations",
-               "mode": "incrementing",
-               "incrementing.column.name": "stop_id",
-               "topic.prefix": "stations",
-               "poll.interval.ms": "100",
+            "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+            "key.converter.schemas.enable": "false",
+            "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+            "value.converter.schemas.enable": "false",
+            "batch.max.rows": "500",
+            "connection.url": "jdbc:postgresql://host.docker.internal:5432/cta",
+            "connection.user": config_settings["username"],
+            "connection.password": config_settings["password"],
+            "table.whitelist": "stations",
+            "mode": "incrementing",
+            "incrementing.column.name": "stop_id",
+            "topic.prefix": "stations",
+            "poll.interval.ms": "100",
            }
        }),
     )

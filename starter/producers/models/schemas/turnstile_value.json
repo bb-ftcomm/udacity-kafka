@@ -1,3 +1,10 @@
 {
-  "TODO": "Complete this Schema! (Make sure to delete this Key/Value Pair!"
+  "type": "record",
+  "name": "turnstile",
+  "namespace": "optimizing_public_transportation",
+  "fields": [
+      {"name": "station_id", "type": "integer"},
+      {"name": "station_name", "type": "string"},
+      {"name": "line", "type": "string"}
+  ]
 }

@@ -31,47 +31,59 @@ class Producer:
         self.num_partitions = num_partitions
         self.num_replicas = num_replicas
 
-        #
-        #
-        # TODO: Configure the broker properties below. Make sure to reference the project README
+        # Configure the broker properties below. Make sure to reference the project README
         # and use the Host URL for Kafka and Schema Registry!
-        #
-        #
         self.broker_properties = {
-            # TODO
-            # TODO
-            # TODO
+            SCHEMA_REGISTRY_URL : "http://localhost:8081",
+            BROKER_URL : "PLAINTEXT://localhost:9092"
         }
 
         # If the topic does not already exist, try to create it
         if self.topic_name not in Producer.existing_topics:
-            self.create_topic()
+            self.create_topic(self)
             Producer.existing_topics.add(self.topic_name)
 
-        # TODO: Configure the AvroProducer
-        # self.producer = AvroProducer(
-        # )
+        # Configure the AvroProducer
+        self.producer = AvroProducer(
+            {"bootstrap.servers": broker_properties.BROKER_URL}
+            , schema_registry=CachedSchemaRegistryClient({"url": broker_properties.SCHEMA_REGISTRY_URL})
+        )
 
     def create_topic(self):
         """Creates the producer topic if it does not already exist"""
-        #
-        #
-        # TODO: Write code that creates the topic for this producer if it does not already exist on
+        # Write code that creates the topic for this producer if it does not already exist on
         # the Kafka Broker.
-        #
-        #
-        logger.info("topic creation kafka integration incomplete - skipping")
+        client = AdminClient({"bootstrap.servers": broker_properties.BROKER_URL})
+
+        topics_response = client.create_topics(
+            [
+                NewTopic(
+                    topic=topic_name,
+                    num_partitions=1,
+                    replication_factor=1,
+                    config={
+                        "cleanup.policy": "delete",
+                        "compression.type": "None",
+                        "delete.retention.ms": "2000",
+                        "file.delete.delay.ms": "2000",
+                    },
+                )
+            ]
+        )
+        # logger.info("topic creation kafka integration incomplete - skipping")
+        for topic, response in topics_response.items():
+            try:
+                response.result()
+                print("topic created")
+            except Exception as e:
+                print(f"failed to create topic {topic_name}: {e}")
 
     def time_millis(self):
         return int(round(time.time() * 1000))
 
     def close(self):
         """Prepares the producer for exit by cleaning up the producer"""
-        #
-        #
         # TODO: Write cleanup code for the Producer here
-        #
-        #
         logger.info("producer close incomplete - skipping")
 
     def time_millis(self):
