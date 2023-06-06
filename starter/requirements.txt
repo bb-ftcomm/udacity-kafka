@@ -5,3 +5,7 @@ confluent-kafka
 faust
 tornado
 urllib3
+aiohttp
+asyncio
+pytest
+pyspark
